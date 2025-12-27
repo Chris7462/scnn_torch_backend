@@ -48,9 +48,14 @@ private:
   /**
    * @brief Apply lane colormap to segmentation mask
    * @param mask Segmentation mask (H, W) with class indices 0-4
+   * @param exist_pred Lane existence probabilities
+   * @param threshold Only draw lane if probability > threshold
    * @return Colored mask (H, W, 3) in BGR format
    */
-  cv::Mat apply_colormap(const cv::Mat & mask);
+  cv::Mat apply_colormap(
+    const cv::Mat & mask,
+    const std::array<float, 4> & exist_pred,
+    float threshold);
 
   /**
    * @brief Preprocess image for inference

@@ -35,11 +35,10 @@ original_size = (img_pil.height, img_pil.width)  # (H, W)
 
 # Calculate target width preserving aspect ratio, divisible by 8
 target_width = round(original_size[1] * target_height / original_size[0] / 8) * 8
-resized_size = (target_height, target_width)
 
 # Define the transformations
 transform = transforms.Compose([
-    transforms.Resize(resized_size),
+    transforms.Resize((target_height, target_width)),
     transforms.ToTensor(),
     transforms.Normalize(mean=MEAN, std=STD),
 ])
