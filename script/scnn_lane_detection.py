@@ -1,3 +1,6 @@
+import sys
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
@@ -7,16 +10,18 @@ import torch.nn.functional as F
 from torchvision import transforms
 
 # Import from scnn_torch
-import sys
-sys.path.insert(0, '../scnn_torch')
+SCNN_ROOT = Path(__file__).resolve().parent.parent.parent
+# For interactive testing only
+#SCNN_ROOT = Path('/home/yi-chen/python_ws')
+sys.path.insert(0, str(SCNN_ROOT))
 
-from model import SCNN
-from utils import visualize_lanes, resize_seg_pred
+from scnn_torch.model import SCNN
+from scnn_torch.utils import visualize_lanes, resize_seg_pred
 
 
 # === Step 1: Configuration ===
-img_path = './test/0000000070.png'  # Provide the path to your image
-checkpoint_path = '../scnn_torch/checkpoints/best.pth'
+img_path = './test/image_000.png'  # Provide the path to your image
+checkpoint_path = SCNN_ROOT / 'checkpoints' / 'best.pth'
 target_height = 288  # Must be divisible by 8
 
 # ImageNet normalization constants
