@@ -21,7 +21,7 @@ from scnn_torch.utils import visualize_lanes, resize_seg_pred
 
 # === Step 1: Configuration ===
 img_path = './test/image_000.png'  # Provide the path to your image
-checkpoint_path = SCNN_ROOT / 'checkpoints' / 'best.pth'
+checkpoint_path = SCNN_ROOT / 'scnn_torch' / 'checkpoints' / 'best.pth'
 target_height = 288  # Must be divisible by 8
 
 # ImageNet normalization constants
