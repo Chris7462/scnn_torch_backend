@@ -1,6 +1,6 @@
 # SCNN Lane Detection Torch Backend
 
-C++ backend for SCNN lane detection using LibTorch.
+C++ backend for SCNN lane detection using LibTorch. This backend is based on the SCNN implementation in [scnn_torch](https://github.com/Chris7462/scnn_torch).
 
 ## Preparation
 
@@ -65,58 +65,21 @@ export TorchVision_DIR="$HOME/thirdparty/libtorchvision/share/cmake/TorchVision"
 export LD_LIBRARY_PATH="$HOME/thirdparty/libtorchvision/lib:$LD_LIBRARY_PATH"
 ```
 
-## Model Export
-
-Before building, you need to export the trained SCNN model to TorchScript format.
-
-### Prerequisites
-- Trained SCNN checkpoint at `scnn_torch/checkpoints/best.pth`
-
-### Export Model
-```bash
-cd scnn_torch_backend/script
-python export_scnn_to_pt.py
-```
-
-This will generate `scnn_torch_backend/models/scnn_vgg16_288x800.pt`.
-
-Custom export options:
-```bash
-python export_scnn_to_pt.py --height 288 --width 800 --checkpoint /path/to/checkpoint.pth --output-dir models
-```
-
 ## Building
 
+### Prerequisites
+Before building, you need to have the trained SCNN checkpoint at `scnn_torch/checkpoints/best.pth`. Make sure you have the checkpoint file, otherwise the colcon build will fail.
+
+To build:
+
 ```bash
-colcon build --packages-select scnn_torch_backend
+colcon build --symlink-install --packages-select scnn_torch_backend
 ```
 
 ## Testing
 
 ```bash
-colcon test --packages-select scnn_torch_backend
-```
-
-Make sure to copy test images to `scnn_torch_backend/test/` before running tests.
-
-## Usage
-
-```cpp
-#include "scnn_torch_backend/scnn_torch_backend.hpp"
-
-// Initialize detector (CPU)
-scnn_torch_backend::SCNNTorchBackend detector("scnn_vgg16_288x800.pt", torch::kCPU);
-
-// Or with CUDA
-scnn_torch_backend::SCNNTorchBackend detector("scnn_vgg16_288x800.pt", torch::kCUDA);
-
-// Run inference
-cv::Mat image = cv::imread("image.png");
-scnn_torch_backend::SCNNResult result = detector.detect(image);
-
-// Access results
-cv::Mat lane_mask = result.seg_pred;              // Colored lane segmentation (BGR)
-std::array<float, 4> exist = result.exist_pred;   // Lane existence probabilities
+colcon test --packages-select scnn_torch_backend --event-handlers console_direct+
 ```
 
 ## Project Structure
@@ -139,7 +102,8 @@ scnn_torch_backend/
 │   └── scnn_torch_backend.cpp # Implementation
 ├── test/
 │   ├── test_scnn_torch_backend.cpp
-│   └── image_000.png          # Test image
+│   ├── image_000.png          # Test image
+│   └── image_001.png
 ├── CMakeLists.txt
 ├── package.xml
 └── ReadMe.md
@@ -162,16 +126,3 @@ Lane colors (BGR):
 | 2 | Lane 2 | Green (0, 255, 0) |
 | 3 | Lane 3 | Red (0, 0, 255) |
 | 4 | Lane 4 | Yellow (0, 255, 255) |
-
-## Reference
-
-This backend is based on the SCNN implementation in `scnn_torch/`.
-
-```bibtex
-@inproceedings{pan2018spatial,
-  title={Spatial as deep: Spatial cnn for traffic scene understanding},
-  author={Pan, Xingang and Shi, Jianping and Luo, Ping and Wang, Xiaogang and Tang, Xiaoou},
-  booktitle={AAAI},
-  year={2018}
-}
-```
