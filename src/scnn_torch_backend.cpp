@@ -35,7 +35,8 @@ SCNNResult SCNNTorchBackend::detect(const cv::Mat & image)
 
   // Resize input to fixed model size (288x952 for KITTI aspect ratio)
   cv::Mat resized_image;
-  cv::resize(image, resized_image, cv::Size(config::MODEL_WIDTH, config::MODEL_HEIGHT), 0, 0, cv::INTER_LINEAR);
+  cv::resize(image, resized_image, cv::Size(config::MODEL_WIDTH, config::MODEL_HEIGHT),
+             0.0, 0.0, cv::INTER_LINEAR);
 
   // Preprocess image
   torch::Tensor input_tensor = preprocess(resized_image);

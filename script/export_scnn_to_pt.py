@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Script to export a trained SCNN model to TorchScript format.
+"""
+Script to export a trained SCNN model to TorchScript format.
 
 Uses torch.jit.trace with fixed input size. Default 288x952 preserves
 KITTI aspect ratio (370x1226 -> 288x952, divisible by 8).
@@ -7,16 +8,15 @@ KITTI aspect ratio (370x1226 -> 288x952, divisible by 8).
 
 import argparse
 import os
-import sys
 from pathlib import Path
+import sys
 
 import torch
 from torch.nn import Module
 
-# Import from scnn_torch
 SCNN_ROOT = Path(__file__).resolve().parent.parent.parent
 # For interactive testing only
-#SCNN_ROOT = Path('/home/yi-chen/python_ws')
+# SCNN_ROOT = Path('/home/yi-chen/python_ws')
 sys.path.insert(0, str(SCNN_ROOT))
 
 from scnn_torch.model import SCNN
@@ -34,7 +34,7 @@ class SCNNWrapper(Module):
         self.model.load_state_dict(checkpoint['net'])
         self.model.eval()
 
-        print(f'  Loaded from iteration {checkpoint.get("iteration", "unknown")}')
+        print(f'Loaded from iteration {checkpoint.get("iteration", "unknown")}')
 
     def forward(self, x):
         seg_pred, exist_pred = self.model(x)
@@ -55,7 +55,7 @@ def export_scnn_model(checkpoint_path, output_path, input_height, input_width):
         traced_module.save(output_path)
         print(f'TorchScript model saved to: {output_path}')
     except Exception as e:
-        print(f'✗ TorchScript export failed: {e}')
+        print(f'TorchScript export failed: {e}')
         raise
 
     # Test the exported model
@@ -63,11 +63,11 @@ def export_scnn_model(checkpoint_path, output_path, input_height, input_width):
     try:
         loaded_model = torch.jit.load(output_path)
         seg_output, exist_output = loaded_model(dummy_input)
-        print(f'✓ TorchScript model validation passed')
-        print(f'  Segmentation output shape: {seg_output.shape}')
-        print(f'  Existence output shape: {exist_output.shape}')
+        print('TorchScript model validation passed')
+        print(f'Segmentation output shape: {seg_output.shape}')
+        print(f'Existence output shape: {exist_output.shape}')
     except Exception as e:
-        print(f'✗ TorchScript model validation failed: {e}')
+        print(f'TorchScript model validation failed: {e}')
 
 
 if __name__ == '__main__':

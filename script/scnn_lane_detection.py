@@ -1,5 +1,5 @@
-import sys
 from pathlib import Path
+import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,11 +12,11 @@ from torchvision import transforms
 # Import from scnn_torch
 SCNN_ROOT = Path(__file__).resolve().parent.parent.parent
 # For interactive testing only
-#SCNN_ROOT = Path('/home/yi-chen/python_ws')
+# SCNN_ROOT = Path('/home/yi-chen/python_ws')
 sys.path.insert(0, str(SCNN_ROOT))
 
 from scnn_torch.model import SCNN
-from scnn_torch.utils import visualize_lanes, resize_seg_pred
+from scnn_torch.utils import resize_seg_pred, visualize_lanes
 
 
 # === Step 1: Configuration ===
@@ -50,10 +50,10 @@ input_tensor = transform(img_pil).unsqueeze(0)  # Shape: [1, 3, H, W]
 # === Step 3: Load pretrained SCNN model ===
 model = SCNN(ms_ks=9, pretrained=False)
 
-print(f"Loading checkpoint: {checkpoint_path}")
+print(f'Loading checkpoint: {checkpoint_path}')
 checkpoint = torch.load(checkpoint_path, map_location='cpu')
 model.load_state_dict(checkpoint['net'])
-print(f"  Loaded from iteration {checkpoint.get('iteration', 'unknown')}")
+print(f"Loaded from iteration {checkpoint.get('iteration', 'unknown')}")
 
 model.eval()
 
