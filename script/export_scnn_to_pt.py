@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Script to export a trained SCNN model to TorchScript format."""
+"""Script to export a trained SCNN model to TorchScript format.
+
+Uses torch.jit.trace with fixed input size. Default 288x952 preserves
+KITTI aspect ratio (370x1226 -> 288x952, divisible by 8).
+"""
 
 import argparse
 import os
@@ -38,24 +42,24 @@ class SCNNWrapper(Module):
 
 
 def export_scnn_model(checkpoint_path, output_path, input_height, input_width):
-    """Export SCNN model to TorchScript format."""
+    """Export SCNN model to TorchScript format using tracing."""
     print('Creating SCNN model wrapper...')
     model = SCNNWrapper(checkpoint_path)
 
     print('Preparing dummy input...')
     dummy_input = torch.randn(1, 3, input_height, input_width)
 
-    print('Exporting to TorchScript...')
+    print('Exporting to TorchScript using trace...')
     try:
-        traced_script_module = torch.jit.trace(model, dummy_input, strict=False)
-        traced_script_module.save(output_path)
+        traced_module = torch.jit.trace(model, dummy_input, strict=False)
+        traced_module.save(output_path)
         print(f'TorchScript model saved to: {output_path}')
     except Exception as e:
         print(f'✗ TorchScript export failed: {e}')
         raise
 
     # Test the exported model
-    print('\nTesting TorchScript model...')
+    print(f'\nTesting TorchScript model with input size {input_height}x{input_width}...')
     try:
         loaded_model = torch.jit.load(output_path)
         seg_output, exist_output = loaded_model(dummy_input)
@@ -70,9 +74,9 @@ if __name__ == '__main__':
     # Construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument('--height', type=int, default=288,
-                    help='The height of the input image')
-    ap.add_argument('--width', type=int, default=800,
-                    help='The width of the input image')
+                    help='The height of the input image (default: 288)')
+    ap.add_argument('--width', type=int, default=952,
+                    help='The width of the input image (default: 952 for KITTI aspect ratio)')
     ap.add_argument('--checkpoint', type=str, default=None,
                     help='Path to checkpoint file (default: scnn_torch/checkpoints/best.pth)')
     ap.add_argument('--output-dir', type=str, default='models',

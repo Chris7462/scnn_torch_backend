@@ -7,9 +7,10 @@
 namespace config
 {
 
-// Model input size (must match exported model)
+// Model input size (fixed for traced model)
+// 288x952 preserves KITTI aspect ratio (370x1226 -> 288x952)
 constexpr int MODEL_HEIGHT = 288;
-constexpr int MODEL_WIDTH = 800;
+constexpr int MODEL_WIDTH = 952;
 
 // Lane existence threshold (probability > threshold to draw lane)
 constexpr float EXIST_THRESHOLD = 0.5f;

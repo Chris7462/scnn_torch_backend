@@ -82,8 +82,8 @@ protected:
   std::unique_ptr<scnn_torch_backend::SCNNTorchBackend> detector_;
 
 private:
-  const std::string model_path_ = "scnn_vgg16_288x800.pt";
-  const std::string image_path_ = "image_001.png";
+  const std::string model_path_ = "scnn_vgg16_288x952.pt";
+  const std::string image_path_ = "image_000.png";
 };
 
 

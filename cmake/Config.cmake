@@ -3,7 +3,8 @@
 # This file contains all model-related configuration variables
 
 # Model configuration - change these variables to use different models
-set(MODEL_NAME "scnn_vgg16_288x800" CACHE STRING "Base name of the model")
+# Model is traced for specific input size (288x952 for KITTI aspect ratio)
+set(MODEL_NAME "scnn_vgg16_288x952" CACHE STRING "Base name of the model")
 set(EXPORT_SCRIPT "export_scnn_to_pt.py" CACHE STRING "Python script model")
 
 # Derived file names (automatically generated from MODEL_NAME)
